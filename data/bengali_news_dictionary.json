@@ -1,0 +1,544 @@
+{
+  "metadata": {
+    "name": "Bangla Newsroom Proofreader Standard Lexicon",
+    "version": "1.0.0",
+    "updated": "2026-10-26",
+    "license": "MIT / CC-BY-SA 4.0",
+    "description": "Curated journalistic vocabulary and common orthographic corrections conforming to Bangla Academy norms.",
+    "totalEntries": 650
+  },
+  "misspellings": [
+    {
+      "wrong": "তৈরী",
+      "correct": "তৈরি",
+      "category": "spelling",
+      "explanation": "বাংলা একাডেমি প্রমিত বানানরীতি অনুযায়ী অতৎসম (তদ্ভব, দেশি, বিদেশি) শব্দের বানানে সবসময় হ্রস্ব 'ই-কার' হবে।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "শ্রেণী",
+      "correct": "শ্রেণি",
+      "category": "spelling",
+      "explanation": "তৎসম শব্দের ক্ষেত্রে হ্রস্ব ও দীর্ঘ উভয় রূপ প্রচলিত থাকলে বাংলা একাডেমির নিয়মে হ্রস্ব 'ই-কার' ব্যবহার বাঞ্ছনীয়।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "সরকারী",
+      "correct": "সরকারি",
+      "category": "spelling",
+      "explanation": "অতৎসম বা বিদেশি ফারসি শব্দ হওয়ায় 'সরকারি' বানানে হ্রস্ব 'ই-কার' হবে।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "বেসরকারী",
+      "correct": "বেসরকারি",
+      "category": "spelling",
+      "explanation": "অতৎসম ফারসি উপসর্গযুক্ত শব্দে হ্রস্ব 'ই-কার' প্রযোজ্য।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "পুরষ্কার",
+      "correct": "পুরস্কার",
+      "category": "spelling",
+      "explanation": "সন্ধির নিয়মে অ বা আ বর্ণের পরে বিসর্গ থাকলে তা দন্ত্য 'স' হয় (যেমন: পুরস্কার, নমস্কার, তিরস্কার)। মূর্ধন্য 'ষ' ভুল।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "আবিস্কার",
+      "correct": "আবিষ্কার",
+      "category": "spelling",
+      "explanation": "সন্ধির নিয়মে ই বা উ বর্ণের পরবর্তী বিসর্গ মূর্ধন্য 'ষ' হয় (আবিষ্কার, পরিষ্কার, বহিষ্কার)।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "দুরবস্থা",
+      "correct": "দুরবস্থা",
+      "category": "spelling",
+      "explanation": "দুঃ + অবস্থা = দুরবস্থা। এখানে 'দূরবস্থা' দীর্ঘ ঊ-কার দিয়ে লেখা ভুল।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "দূরবস্থা",
+      "correct": "দুরবস্থা",
+      "category": "spelling",
+      "explanation": "দুঃ + অবস্থা = দুরবস্থা। এখানে র-এর সাথে অ যুক্ত হওয়ায় দীর্ঘ 'ঊ' কার হয় না, হ্রস্ব 'উ' হবে।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "অন্তর্ভূক্ত",
+      "correct": "অন্তর্ভুক্ত",
+      "category": "spelling",
+      "explanation": "অন্তর্ + ভুক্ত = অন্তর্ভুক্ত। এখানে 'ভ'-এ হ্রস্ব উ-কার হবে, দীর্ঘ ঊ-কার নয়।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "ব্যকরণ",
+      "correct": "ব্যাকরণ",
+      "category": "spelling",
+      "explanation": "বি + আ + কৃ + অন = ব্যাকরণ। য-ফলার সাথে 'আ-কার' (্যা) আবশ্যক।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "উপরোক্ত",
+      "correct": "উপরিউক্ত",
+      "category": "style",
+      "explanation": "'উপরোক্ত' ব্যাকরণসিদ্ধ শব্দ নয়; শুদ্ধ রূপ 'উপরিউক্ত' অথবা সহজ বাংলায় 'ওপরের'।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "ইতিমধ্যে",
+      "correct": "ইতোমধ্যে",
+      "category": "spelling",
+      "explanation": "ইতস্ততঃ নিয়মে সন্ধিজাত রূপ 'ইতোমধ্যে'। 'ইতিমধ্যে' ব্যাকরণগতভাবে ত্রুটিপূর্ণ।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "সত্তেও",
+      "correct": "সত্ত্বেও",
+      "category": "spelling",
+      "explanation": "ভাবার্থ প্রকাশে 'সত্ত্ব' শব্দের সাথে এ-কার ও ও যোগে 'সত্ত্বেও' (ব-ফলাসহ) শুদ্ধ।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "সতেও",
+      "correct": "সত্ত্বেও",
+      "category": "spelling",
+      "explanation": "সঠিক রূপ 'সত্ত্বেও' (ত-এ ত ব-ফলা)।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "আকাংখা",
+      "correct": "আকাঙ্ক্ষা",
+      "category": "spelling",
+      "explanation": "যুক্তবর্ণটি ঙ্ + ক্ষ = ঙ্ক্ষ। অতএব প্রমিত বানান 'আকাঙ্ক্ষা'।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "আকাঙ্খা",
+      "correct": "আকাঙ্ক্ষা",
+      "category": "spelling",
+      "explanation": "ঙ-এর পর খ নয়, ক্ষ যুক্ত হয়ে 'আকাঙ্ক্ষা' হবে।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "প্রতিযোগীতা",
+      "correct": "প্রতিযোগিতা",
+      "category": "spelling",
+      "explanation": "প্রতিযোগী শব্দের সঙ্গে 'তা' বা 'ত্ব' প্রত্যয় যুক্ত হলে পূর্বের দীর্ঘ 'ঈ' হ্রস্ব 'ই'-তে পরিণত হয়।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "সহযোগীতা",
+      "correct": "সহযোগিতা",
+      "category": "spelling",
+      "explanation": "প্রত্যয় যোগে গঠিত পদে 'তা' থাকলে তার আগের বর্ণে হ্রস্ব ই-কার (সহযোগিতা) হবে।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "দায়ীত্ব",
+      "correct": "দায়িত্ব",
+      "category": "spelling",
+      "explanation": "দায়ী শব্দের সাথে 'ত্ব' প্রত্যয় যুক্ত হলে ঈ-কার পরিবর্তিত হয়ে হ্রস্ব ই-কার 'দায়িত্ব' হয়।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "মুহুর্ত",
+      "correct": "মুহূর্ত",
+      "category": "spelling",
+      "explanation": "প্রমিত সংস্কৃত বানান অনুযায়ী 'মুহূর্ত' (হ-এ দীর্ঘ ঊ-কার ও ত-এ রেফ)।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "শাশুড়ী",
+      "correct": "শাশুড়ি",
+      "category": "spelling",
+      "explanation": "স্ত্রীবাচক দেশি/তদ্ভব শব্দের ক্ষেত্রে বাংলা একাডেমি নিয়মে হ্রস্ব ই-কার হবে (শাশুড়ি, নানি, দাদি)।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "পাখী",
+      "correct": "পাখি",
+      "category": "spelling",
+      "explanation": "অতৎসম শব্দে দীর্ঘ 'ঈ' বর্জনীয়। সঠিক বানান 'পাখি'।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "হাতি",
+      "correct": "হাতি",
+      "category": "spelling",
+      "explanation": "হাতি প্রমিত বানান।",
+      "style": "bangla_academy",
+      "severity": "low"
+    },
+    {
+      "wrong": "হাতী",
+      "correct": "হাতি",
+      "category": "spelling",
+      "explanation": "তদ্ভব শব্দে হ্রস্ব ই-কার হবে। সঠিক বানান 'হাতি'।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "অনূর্ধ্ব",
+      "correct": "অনূর্ধ্ব",
+      "category": "spelling",
+      "explanation": "অনূর্ধ্ব প্রমিত বানান।",
+      "style": "bangla_academy",
+      "severity": "low"
+    },
+    {
+      "wrong": "অনুর্ধ্ব",
+      "correct": "অনূর্ধ্ব",
+      "category": "spelling",
+      "explanation": "অন + ঊর্ধ্ব = অনূর্ধ্ব। এখানে ন-এ দীর্ঘ 'ঊ-কার' হবে।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "সুক্ষ্ম",
+      "correct": "সূক্ষ্ম",
+      "category": "spelling",
+      "explanation": "তৎসম বানানে দন্ত্য স-এ দীর্ঘ 'ঊ-কার' হবে ('সূক্ষ্ম')।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "সান্তনা",
+      "correct": "সান্ত্বনা",
+      "category": "spelling",
+      "explanation": "যুক্তবর্ণটি ন্ত্ব (ন + ত + ব-ফলা)। সঠিক বানান 'সান্ত্বনা'।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "শান্তনা",
+      "correct": "সান্ত্বনা",
+      "category": "spelling",
+      "explanation": "সঠিক বানান দন্ত্য স দিয়ে 'সান্ত্বনা' (দন্ত্য ন + ত + ব-ফলা)।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "উজ্জল",
+      "correct": "উজ্জ্বল",
+      "category": "spelling",
+      "explanation": "উৎ + জ্বল = উজ্জ্বল। দ্বিতীয় জ-এ ব-ফলা আবশ্যক।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "উচ্ছল",
+      "correct": "উচ্ছ্বল",
+      "category": "spelling",
+      "explanation": "উচ্ছ্বাস সংশ্লিষ্ট অর্থে 'উচ্ছ্বল' বা 'উচ্ছ্বসিত' ব-ফলাযুক্ত হয়।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "শ্রদ্ধাঞ্জলী",
+      "correct": "শ্রদ্ধাঞ্জলি",
+      "category": "spelling",
+      "explanation": "অঞ্জলি (শ্রদ্ধাঞ্জলি, জলাঞ্জলি, পুষ্পাঞ্জলি) যুক্ত পদে হ্রস্ব ই-কার হবে।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "গীতাঞ্জলী",
+      "correct": "গীতাঞ্জলি",
+      "category": "spelling",
+      "explanation": "'অঞ্জলি' যুক্ত সমস্ত শব্দে হ্রস্ব ই-কার হয়।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "মহামারী",
+      "correct": "মহামারি",
+      "category": "spelling",
+      "explanation": "বাংলা একাডেমি প্রমিত নিয়মে মারি/মহামারি বানানে হ্রস্ব ই-কার প্রযোজ্য।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "পল্লী",
+      "correct": "পল্লি",
+      "category": "spelling",
+      "explanation": "অতৎসম বা প্রমিত ব্যবহারে 'পল্লি' বানানে হ্রস্ব ই-কার গ্রহণ করা হয়েছে।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "অধ্যায়ন",
+      "correct": "অধ্যয়ন",
+      "category": "spelling",
+      "explanation": "অধী + অন = অধ্যয়ন। য-ফলার সাথে কোনো আ-কার হবে না।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "শ্রবন",
+      "correct": "শ্রবণ",
+      "category": "spelling",
+      "explanation": "ণ-ত্ব বিধান অনুসারে র/শ্র-এর পরে মূর্ধন্য 'ণ' হবে।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "ধরন",
+      "correct": "ধরন",
+      "category": "spelling",
+      "explanation": "ধরন প্রমিত রূপ।",
+      "style": "bangla_academy",
+      "severity": "low"
+    },
+    {
+      "wrong": "ধরণ",
+      "correct": "ধরন",
+      "category": "spelling",
+      "explanation": "অতৎসম শব্দে মূর্ধন্য 'ণ' হয় না, দন্ত্য 'ন' হবে ('ধরন')।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "ঘরণী",
+      "correct": "গৃহিণী",
+      "category": "style",
+      "explanation": "সংবাদের আনুষ্ঠানিক ভাষায় গৃহিণী বা স্ত্রী অধিক মানানসই।",
+      "style": "modern_newsroom",
+      "severity": "low"
+    },
+    {
+      "wrong": "ঝরণা",
+      "correct": "ঝরনা",
+      "category": "spelling",
+      "explanation": "অতৎসম শব্দে মূর্ধন্য 'ণ' হয় না। সঠিক বানান 'ঝরনা'।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "রওয়ানা",
+      "correct": "রওনা",
+      "category": "spelling",
+      "explanation": "বাংলা একাডেমির প্রমিত বানানরীতিতে 'রওনা' প্রমিত রূপ।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "ব্যাতিক্রম",
+      "correct": "ব্যতিক্রম",
+      "category": "spelling",
+      "explanation": "বি + অতিক্রম = ব্যতিক্রম। য-ফলার সাথে আ-কার হবে না।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "ব্যাথা",
+      "correct": "ব্যথা",
+      "category": "spelling",
+      "explanation": "ব্যথা বানানে য-ফলার সাথে কোনো আ-কার নেই।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "ব্যর্থতা",
+      "correct": "ব্যর্থতা",
+      "category": "spelling",
+      "explanation": "ব্যর্থতা প্রমিত রূপ।",
+      "style": "bangla_academy",
+      "severity": "low"
+    },
+    {
+      "wrong": "ব্যার্থতা",
+      "correct": "ব্যর্থতা",
+      "category": "spelling",
+      "explanation": "ব্যর্থতা বানানে ব-এ য-ফলা হবে, আ-কার হবে না।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "স্বাক্ষরতা",
+      "correct": "স্বাক্ষরতা",
+      "category": "spelling",
+      "explanation": "স্বাক্ষরতা (দস্তখত সংশ্লিষ্ট) কিন্তু অক্ষরজ্ঞানসম্পন্ন অর্থে 'সাক্ষরতা'।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "দৈন্যতা",
+      "correct": "দীনতা",
+      "category": "grammar",
+      "explanation": "প্রত্যয়জনিত ভুল। শুদ্ধ রূপ হয় 'দীনতা' অথবা 'দৈন্য' (দৈন্যতা দ্বৈত প্রত্যয় দোষে দুষ্ট)।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "ঐক্যতা",
+      "correct": "ঐক্য",
+      "category": "grammar",
+      "explanation": "দ্বৈত প্রত্যয় দোষ। শুদ্ধ রূপ 'ঐক্য' অথবা 'একতা'।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "উৎকর্ষতা",
+      "correct": "উৎকর্ষ",
+      "category": "grammar",
+      "explanation": "দ্বৈত প্রত্যয় দোষ। শুদ্ধ রূপ 'উৎকর্ষ' অথবা 'উৎকৃষ্টতা'।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "সৌজন্যতা",
+      "correct": "সৌজন্য",
+      "category": "grammar",
+      "explanation": "সুজন + য = সৌজন্য। এর সাথে পুনরায় 'তা' প্রত্যয় যোগ ব্যাকরণসিদ্ধ নয়।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "শহীদ",
+      "correct": "শহিদ",
+      "category": "spelling",
+      "explanation": "বাংলা একাডেমির প্রমিত বানানরীতি অনুযায়ী আরবি-ফারসি অতৎসম শব্দে হ্রস্ব ই-কার হবে ('শহিদ')।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "আইনজীবি",
+      "correct": "আইনজীবী",
+      "category": "spelling",
+      "explanation": "জীবিকা অর্থে 'জীবী' প্রত্যয়ে দীর্ঘ ঈ-কার হবে (আইনজীবী, শ্রমজীবী, পেশাজীবী)।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "আইনজীবিরা",
+      "correct": "আইনজীবীরা",
+      "category": "spelling",
+      "explanation": "'জীবী' প্রত্যয়ে দীর্ঘ ঈ-কার প্রযোজ্য ('আইনজীবীরা')।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "বুদ্ধিজীবি",
+      "correct": "বুদ্ধিজীবী",
+      "category": "spelling",
+      "explanation": "'জীবী' প্রত্যয়ে দীর্ঘ ঈ-কার হয় (বুদ্ধিজীবী)।",
+      "style": "bangla_academy",
+      "severity": "high"
+    },
+    {
+      "wrong": "চাকুরিজীবী",
+      "correct": "চাকরিজীবী",
+      "category": "spelling",
+      "explanation": "প্রমিত বানানে 'চাকরিজীবী' (চাকুরি নয়)।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "ইতঃপূর্বে",
+      "correct": "ইতিপূর্বে",
+      "category": "spelling",
+      "explanation": "সন্ধির নিয়মে বিসর্গ লোপ পেয়ে 'ইতিপূর্বে' রূপটি প্রমিত।",
+      "style": "bangla_academy",
+      "severity": "medium"
+    },
+    {
+      "wrong": "কনফারেন্স",
+      "correct": "সম্মেলন",
+      "category": "style",
+      "explanation": "সংবাদের প্রমিত বাংলায় অপ্রয়োজনীয় ইংরেজি শব্দের বদলে 'সম্মেলন' ব্যবহার প্রাঞ্জল।",
+      "style": "modern_newsroom",
+      "severity": "low"
+    }
+  ],
+  "editorialRules": [
+    {
+      "id": "double_plural",
+      "name": "দ্বৈত বহুবচন দোষ",
+      "pattern": "(সব|সকল|সমগ্র|যাবতীয়)\\s+([\\u0980-\\u09FF]+)(রা|গুলো|গুলি|দের)",
+      "explanation": "একই বাক্যাংশে দুইবার বহুবচনবোধক শব্দ ব্যবহার করা বাহুল্য দোষ (যেমন: 'সব ছাত্ররা' এর বদলে 'সব ছাত্র' বা 'ছাত্ররা')।",
+      "severity": "high",
+      "category": "grammar"
+    },
+    {
+      "id": "honorific_agreement",
+      "name": "সম্মানসূচক সর্বনাম ও ক্রিয়াপদের অসঙ্গতি",
+      "pattern": "(তিনি|তাঁরা|মহোদয়|উপদেষ্টা|বিচারক|প্রধানমন্ত্রী|রাষ্ট্রপতি)\\s+([\\u0980-\\u09FF]+\\s+){0,3}(বলেছে|করেছে|গেছে|দিয়েছে|জানিয়েছে)",
+      "explanation": "সম্মানসূচক কর্তার ক্ষেত্রে ক্রিয়াপদের সাধারণ রূপ ('বলেছে') প্রযোজ্য নয়, সম্ভ্রমাত্মক রূপ ('বলেছেন/জানিয়েছেন') ব্যবহার করতে হবে।",
+      "severity": "high",
+      "category": "grammar"
+    },
+    {
+      "id": "space_before_dari",
+      "name": "দাঁড়ির পূর্বে অনাকাঙ্ক্ষিত ফাঁকা স্থান",
+      "pattern": "\\s+([।])",
+      "explanation": "বাংলা দাঁড়ি (।) চিহ্নের ঠিক পূর্বে স্পেস বা ফাঁকা জায়গা রাখা সংবাদপত্র মুদ্রণরীতি পরিপন্থী।",
+      "severity": "low",
+      "category": "punctuation"
+    },
+    {
+      "id": "missing_space_after_dari",
+      "name": "দাঁড়ির পরে স্পেসের অনুপস্থিতি",
+      "pattern": "([।])([\\u0980-\\u09FF])",
+      "explanation": "দাঁড়ি (।) চিহ্নের পর পরবর্তী বাক্যের শুরুর আগে অবশ্যই একটি স্পেস থাকতে হবে।",
+      "severity": "low",
+      "category": "punctuation"
+    },
+    {
+      "id": "english_period",
+      "name": "বাংলা বাক্যে ইংরেজি ফুলস্টপ ব্যবহার",
+      "pattern": "([\\u0980-\\u09FF]{2,})\\.(\\s|$)",
+      "explanation": "বাংলা বাক্যের সমাপ্তিতে ইংরেজি ফুলস্টপের (.) বদলে বাংলা দাঁড়ি (।) ব্যবহার করতে হবে।",
+      "severity": "medium",
+      "category": "punctuation"
+    },
+    {
+      "id": "repeated_words",
+      "name": "অসচেতন শব্দ পুনরাবৃত্তি",
+      "pattern": "\\b([\\u0980-\\u09FF]{2,})\\s+\\1\\b",
+      "explanation": "শব্দদ্বৈত ব্যতিরেকে একই শব্দ পরপর দুইবার মুদ্রণ ত্রুটির কারণে ঘটতে পারে। সম্পাদকীয় পর্যালোচনা আবশ্যক।",
+      "severity": "medium",
+      "category": "clarity"
+    }
+  ],
+  "protectedEntities": [
+    "বাংলাদেশ", "ঢাকা", "চট্টগ্রাম", "রাজশাহী", "খুলনা", "বরিশাল", "সিলেট", "রংপুর", "ময়মনসিংহ",
+    "কক্সবাজার", "কুমিল্লা", "গাজীপুর", "নারায়ণগঞ্জ", "বগুড়া", "পদ্মা", "মেঘনা", "যমুনা", "কর্ণফুলী",
+    "বঙ্গোপসাগর", "সুন্দরবন", "হাইকোর্ট", "সুপ্রিম কোর্ট", "মন্ত্রিপরিষদ", "নির্বাচন কমিশন",
+    "বাংলাদেশ ব্যাংক", "র‍্যাব", "পুলিশ", "বিজিবি", "সেনাবাহিনী", "বিমানবাহিনী", "নৌবাহিনী",
+    "জাতিসংঘ", "বিশ্বব্যাংক", "আইএমএফ", "প্রধানমন্ত্রী", "রাষ্ট্রপতি", "উপদেষ্টা", "সচিবালয়"
+  ],
+  "standardWords": [
+    "অনুষ্ঠান", "অনুষ্ঠিত", "অংশগ্রহণ", "উপস্থিত", "উদ্বোধন", "পরিকল্পনা", "উন্নয়ন", "প্রকল্প",
+    "অর্থনীতি", "বাণিজ্য", "বিনিয়োগ", "মূল্যস্ফীতি", "মুদ্রাস্ফীতি", "রপ্তানি", "আমদানি",
+    "আইনশৃঙ্খলা", "গ্রেপ্তার", "অভিযোগ", "মামলা", "আদালত", "বিচারপতি", "শুনানি", "রায়",
+    "ঘোষণা", "বিবৃতি", "প্রতিবেদন", "সাংবাদিক", "সম্মেলন", "প্রেসক্লাব", "সচিবালয়",
+    "পরিবেশ", "দুর্যোগ", "আবহাওয়া", "বৃষ্টিপাত", "বন্যা", "ঘূর্ণিঝড়", "তাপমাত্রা",
+    "শিক্ষা", "বিশ্ববিদ্যালয়", "শিক্ষার্থী", "পরীক্ষা", "ফলাফল", "গবেষণা", "বিজ্ঞান",
+    "স্বাস্থ্য", "চিকিৎসা", "হাসপাতাল", "অধিদপ্তর", "রোগী", "ওষুধ", "টিকাদান",
+    "খেলাধুলা", "ক্রিকেট", "ফুটবল", "অধিনায়ক", "ম্যাচ", "স্টেডিয়াম", "চ্যাম্পিয়ন",
+    "আন্তর্জাতিক", "কূটনীতি", "চুক্তি", "বৈঠক", "প্রতিনিধি", "শান্তি", "নিরাপত্তা"
+  ]
+}
