@@ -5,29 +5,23 @@ import {
   Newspaper,
   BookOpen,
   Sparkles,
-  Info,
-  SlidersHorizontal,
-  ChevronDown,
 } from 'lucide-react';
-import { EditorialStyle, EditorialPreset } from '@/types/proofreading';
-import { SAMPLE_ARTICLES } from '@/lib/presets/sample-articles';
+import { EditorialStyle } from '@/types/proofreading';
 import { DictionaryInfoModal } from './DictionaryInfoModal';
+import Link from 'next/link';
 
 interface HeaderProps {
   editorialStyle: EditorialStyle;
   onStyleChange: (style: EditorialStyle) => void;
-  onSelectPreset: (preset: EditorialPreset) => void;
   isAiActive: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   editorialStyle,
   onStyleChange,
-  onSelectPreset,
   isAiActive,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [presetDropdownOpen, setPresetDropdownOpen] = useState(false);
 
   return (
     <>
@@ -40,14 +34,14 @@ export const Header: React.FC<HeaderProps> = ({
                 <Newspaper className="w-5 h-5" />
               </div>
               <div>
-                <div className="flex items-center gap-2">
+                <Link href="/"><div className="flex items-center gap-2">
                   <h1 className="text-xl font-bold tracking-tight text-slate-900">
                     সংবাদ শুদ্ধি
                   </h1>
                   <span className="hidden sm:inline-block px-2 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-800 rounded-full border border-emerald-200">
                     নিউজরুম সংস্করণ
                   </span>
-                </div>
+                </div></Link>
                 <p className="text-[11px] font-medium text-slate-500 tracking-wide">
                   Bangla Newsroom Proofreader
                 </p>
@@ -56,44 +50,6 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* Middle / Right Controls */}
             <div className="flex items-center space-x-2 sm:space-x-3">
-              {/* Presets Dropdown */}
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setPresetDropdownOpen(!presetDropdownOpen)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-300 transition-colors"
-                >
-                  <span className="hidden md:inline">নমুনা সংবাদ</span>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
-                </button>
-
-                {presetDropdownOpen && (
-                  <div
-                    className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150"
-                    onMouseLeave={() => setPresetDropdownOpen(false)}
-                  >
-                    <div className="px-3 py-1.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-100">
-                      নমুনা সংবাদ প্রতিবেদন নির্বাচন করুন
-                    </div>
-                    {SAMPLE_ARTICLES.map((preset) => (
-                      <button
-                        key={preset.id}
-                        onClick={() => {
-                          onSelectPreset(preset);
-                          setPresetDropdownOpen(false);
-                        }}
-                        className="w-full text-left px-3 py-2 text-xs hover:bg-slate-50 transition-colors flex flex-col"
-                      >
-                        <span className="font-medium text-slate-800">{preset.title}</span>
-                        <span className="text-[10px] text-slate-500 line-clamp-1">
-                          {preset.description}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-
               {/* Style Selector */}
               <div className="hidden lg:flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200">
                 <button
@@ -158,3 +114,4 @@ export const Header: React.FC<HeaderProps> = ({
     </>
   );
 };
+

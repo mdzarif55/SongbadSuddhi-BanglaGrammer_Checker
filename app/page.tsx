@@ -12,7 +12,6 @@ import {
   Issue,
   IssueCategory,
   AnalysisSummary as SummaryType,
-  EditorialPreset,
   CheckArticleResponse,
   CorrectArticleResponse,
 } from '@/types/proofreading';
@@ -20,19 +19,18 @@ import {
   applySafeReplacements,
   recomputeRemainingOffsets,
 } from '@/lib/correction/apply-corrections';
-import { SAMPLE_ARTICLES } from '@/lib/presets/sample-articles';
 import { normalizeBengali } from '@/lib/dictionary/normalize';
 
 export default function ProofreaderPage() {
   // Input states
   const [title, setTitle] = useState('');
-  const [content, setContent] = useState(SAMPLE_ARTICLES[0].content);
+  const [content, setContent] = useState('');
   const [category, setCategory] = useState<ArticleCategory>('national');
   const [editorialStyle, setEditorialStyle] = useState<EditorialStyle>('bangla_academy');
 
   // Working & Snapshot states
-  const [originalSnapshot, setOriginalSnapshot] = useState(SAMPLE_ARTICLES[0].content);
-  const [workingText, setWorkingText] = useState(SAMPLE_ARTICLES[0].content);
+  const [originalSnapshot, setOriginalSnapshot] = useState('');
+  const [workingText, setWorkingText] = useState('');
 
   // Analysis result states
   const [issues, setIssues] = useState<Issue[]>([]);
@@ -48,20 +46,6 @@ export default function ProofreaderPage() {
   const [error, setError] = useState<string | null>(null);
   const [isAiActive, setIsAiActive] = useState(true);
   const [activeTab, setActiveTab] = useState<'editor' | 'comparison'>('editor');
-
-  // Load a preset
-  const handleSelectPreset = (preset: EditorialPreset) => {
-    setTitle(preset.title);
-    setContent(preset.content);
-    setCategory(preset.category);
-    setOriginalSnapshot(preset.content);
-    setWorkingText(preset.content);
-    setIssues([]);
-    setIssueStatuses({});
-    setSummary(null);
-    setError(null);
-    setActiveTab('editor');
-  };
 
   // 1. Analyze / Check Article
   const handleCheckArticle = async () => {
@@ -255,7 +239,6 @@ export default function ProofreaderPage() {
       <Header
         editorialStyle={editorialStyle}
         onStyleChange={setEditorialStyle}
-        onSelectPreset={handleSelectPreset}
         isAiActive={isAiActive}
       />
 
@@ -359,3 +342,4 @@ export default function ProofreaderPage() {
     </div>
   );
 }
+
