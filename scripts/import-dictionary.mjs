@@ -6,6 +6,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import readline from 'node:readline';
 
 const args = process.argv.slice(2);
 const sourceIdx = args.indexOf('--source');
@@ -23,16 +24,14 @@ if (!fs.existsSync(resolvedPath)) {
 }
 
 console.log(`Processing vocabulary from: ${resolvedPath}...`);
-const raw = fs.readFileSync(resolvedPath, 'utf-8');
-const lines = raw.split(/\r?\n/).map((l) => l.trim().normalize('NFC')).filter(Boolean);
-
-console.log(`Extracted ${lines.length} lines. Validating Bengali character tokens...`);
 
 const targetJsonPath = path.resolve(process.cwd(), 'data/bengali_news_dictionary.json');
+const targetMetaPath = path.resolve(process.cwd(), 'data/dictionary_meta.json');
+
 let existing = {
   metadata: {
     name: "Bangla Newsroom Proofreader Standard Lexicon",
-    version: "1.1.0",
+    version: "2.0.0",
     updated: new Date().toISOString().split('T')[0],
     license: "MIT / CC-BY-SA 4.0",
     description: "Curated journalistic vocabulary conforming to Bangla Academy norms.",
@@ -53,19 +52,39 @@ if (fs.existsSync(targetJsonPath)) {
 }
 
 const wordSet = new Set(existing.standardWords || []);
+let initialCount = wordSet.size;
 let addedCount = 0;
-const bengaliRegex = /^[\u0980-\u09FF]+$/;
+const bengaliRegex = /^[\u0980-\u09FF\u200C\u200D]+$/;
 
-for (const line of lines) {
-  if (bengaliRegex.test(line) && !wordSet.has(line)) {
-    wordSet.add(line);
-    addedCount++;
+async function processFile() {
+  const fileStream = fs.createReadStream(resolvedPath, { encoding: 'utf-8' });
+  const rl = readline.createInterface({
+    input: fileStream,
+    crlfDelay: Infinity
+  });
+
+  for await (const line of rl) {
+    const word = line.trim().normalize('NFC').replace(/^\uFEFF/, '');
+    if (word && bengaliRegex.test(word) && !wordSet.has(word)) {
+      wordSet.add(word);
+      addedCount++;
+    }
   }
+
+  console.log(`Extracted and normalized words. Added: ${addedCount} new words.`);
+
+  existing.standardWords = Array.from(wordSet);
+  existing.metadata.totalEntries = existing.standardWords.length + (existing.misspellings?.length || 0);
+  existing.metadata.updated = new Date().toISOString().split('T')[0];
+  existing.metadata.version = "2.0.0";
+
+  // Write metadata file for lightweight client consumption
+  fs.writeFileSync(targetMetaPath, JSON.stringify(existing.metadata, null, 2), 'utf-8');
+
+  // Write full dictionary
+  fs.writeFileSync(targetJsonPath, JSON.stringify(existing), 'utf-8');
+
+  console.log(`Success! Total dictionary entries: ${existing.metadata.totalEntries}`);
 }
 
-existing.standardWords = Array.from(wordSet);
-existing.metadata.totalEntries = existing.standardWords.length + (existing.misspellings?.length || 0);
-existing.metadata.updated = new Date().toISOString().split('T')[0];
-
-fs.writeFileSync(targetJsonPath, JSON.stringify(existing, null, 2), 'utf-8');
-console.log(`Success! Added ${addedCount} new words. Total entries: ${existing.metadata.totalEntries}`);
+processFile().catch(console.error);

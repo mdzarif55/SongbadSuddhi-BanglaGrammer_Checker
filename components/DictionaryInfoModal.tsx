@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { X, BookOpen, ShieldCheck, FileCode, CheckCircle2, AlertTriangle } from 'lucide-react';
-import dictionaryData from '@/data/bengali_news_dictionary.json';
+import dictionaryMeta from '@/data/dictionary_meta.json';
 
 interface DictionaryInfoModalProps {
   isOpen: boolean;
@@ -25,7 +25,7 @@ export const DictionaryInfoModal: React.FC<DictionaryInfoModalProps> = ({
             <div>
               <h3 className="text-lg font-semibold">বাংলা অভিধান ও বানান ভাণ্ডার তথ্য</h3>
               <p className="text-xs text-slate-300">
-                সংবাদ শুদ্ধি লেক্সিকন ইঞ্জিন (সংস্করণ: {dictionaryData.metadata.version})
+                সংবাদ শুদ্ধি লেক্সিকন ইঞ্জিন (সংস্করণ: {dictionaryMeta.version})
               </p>
             </div>
           </div>
@@ -44,12 +44,12 @@ export const DictionaryInfoModal: React.FC<DictionaryInfoModalProps> = ({
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
             <div>
               <span className="block text-xs text-slate-500 font-medium">লাইসেন্স</span>
-              <span className="font-semibold text-slate-900">{dictionaryData.metadata.license}</span>
+              <span className="font-semibold text-slate-900">{dictionaryMeta.license}</span>
             </div>
             <div>
               <span className="block text-xs text-slate-500 font-medium">প্রমিত শব্দ ও নিয়ম</span>
               <span className="font-semibold text-emerald-700">
-                {dictionaryData.metadata.totalEntries} টি যাচাইকৃত এন্ট্রি
+                {dictionaryMeta.totalEntries.toLocaleString('bn-BD')} টি যাচাইকৃত এন্ট্রি
               </span>
             </div>
             <div>
@@ -129,3 +129,4 @@ export const DictionaryInfoModal: React.FC<DictionaryInfoModalProps> = ({
     </div>
   );
 };
+

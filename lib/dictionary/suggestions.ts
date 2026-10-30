@@ -93,6 +93,11 @@ export function findSuggestions(
     const candidateNorm = normalizeBengali(candidate);
     if (candidateNorm === normalizedTarget) continue;
 
+    // Fast prune: if length difference exceeds max threshold, skip expensive DP computation
+    if (Math.abs(candidateNorm.length - normalizedTarget.length) > maxDistance + 1) {
+      continue;
+    }
+
     const dist = levenshteinDistance(normalizedTarget, candidateNorm);
     const candidateKey = bengaliPhoneticKey(candidateNorm);
     const phoneticBonus = targetKey === candidateKey;
@@ -115,3 +120,4 @@ export function findSuggestions(
 
   return scored.slice(0, maxResults).map((item) => item.word);
 }
+

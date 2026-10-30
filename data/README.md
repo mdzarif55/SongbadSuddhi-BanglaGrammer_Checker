@@ -29,3 +29,4 @@ node scripts/import-dictionary.mjs --source path/to/wordlist.txt
 ```
 
 শব্দ তালিকাটি এক লাইনে একটি করে শব্দ এবং অবশ্যই `UTF-8 NFC` ফরম্যাটে এনকোড করা থাকতে হবে।
+

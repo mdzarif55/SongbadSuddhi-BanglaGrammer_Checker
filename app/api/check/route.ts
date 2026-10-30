@@ -8,7 +8,7 @@ import { CheckArticleRequestSchema } from '@/lib/validation/check-schema';
 import { analyzeArticleWithGemini } from '@/lib/ai/gemini';
 import { checkRateLimit, sanitizeUntrustedArticleInput } from '@/lib/security/rate-limit';
 import { CheckArticleResponse } from '@/types/proofreading';
-import dictionaryData from '@/data/bengali_news_dictionary.json';
+import dictionaryMeta from '@/data/dictionary_meta.json';
 
 export async function POST(req: NextRequest) {
   const startTime = Date.now();
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
       articleCategory: category,
       processingTimeMs: Date.now() - startTime,
       meta: {
-        dictionaryVersion: dictionaryData.metadata.version,
+        dictionaryVersion: dictionaryMeta.version,
         aiModelUsed: result.modelName,
       },
     };
@@ -96,3 +96,4 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+

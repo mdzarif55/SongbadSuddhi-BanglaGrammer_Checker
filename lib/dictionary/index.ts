@@ -54,9 +54,7 @@ class BengaliDictionaryEngine implements BengaliDictionaryInterface {
 
   constructor() {
     this.metadata = dictionaryData.metadata;
-    this.standardWordSet = new Set(
-      dictionaryData.standardWords.map((w) => normalizeBengali(w))
-    );
+    this.standardWordSet = new Set(dictionaryData.standardWords);
 
     this.misspellingMap = new Map();
     for (const item of dictionaryData.misspellings) {
@@ -75,7 +73,8 @@ class BengaliDictionaryEngine implements BengaliDictionaryInterface {
 
     this.editorialRules = dictionaryData.editorialRules as EditorialRuleEntry[];
 
-    this.allVocabularyList = Array.from(this.standardWordSet);
+    // Re-use array reference for memory efficiency
+    this.allVocabularyList = dictionaryData.standardWords;
   }
 
   public lookupWord(word: string): boolean {
@@ -209,3 +208,4 @@ class BengaliDictionaryEngine implements BengaliDictionaryInterface {
 
 // Singleton dictionary instance
 export const bengaliDictionary = new BengaliDictionaryEngine();
+
