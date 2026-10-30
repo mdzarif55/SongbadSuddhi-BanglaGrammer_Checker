@@ -2,13 +2,15 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'সংবাদ শুদ্ধি — Bangla Newsroom Proofreader',
+  title: 'SongbadSudhhi — Bangla Grammar Checker',
   description:
-    'বাংলাদেশের সংবাদপত্রের সাংবাদিক ও সহ-সম্পাদকদের জন্য প্রমিত বাংলা বানান, ব্যাকরণ ও সম্পাদকীয় নিরীক্ষা প্ল্যাটফর্ম।',
+    'প্রমিত বাংলা বানান, ব্যাকরণ ও সম্পাদকীয় নিরীক্ষা প্ল্যাটফর্ম — SongbadSudhhi (Bangla Grammar Checker)।',
   keywords: [
+    'SongbadSudhhi',
+    'Bangla Grammar Checker',
     'Bangla Proofreader',
-    'Bengali Newspaper Editing',
     'সংবাদ শুদ্ধি',
+    'বাংলা ব্যাকরণ চেকার',
     'বাংলা বানান পরীক্ষা',
     'বাংলা ব্যাকরণ',
     'বাংলা একাডেমি প্রমিত বানান',

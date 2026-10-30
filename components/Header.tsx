@@ -50,7 +50,7 @@ export const Header: React.FC<HeaderProps> = ({
                   </span>
                 </div>
                 <p className="text-[11px] font-medium text-slate-500 tracking-wide">
-                  Bangla Newsroom Proofreader
+                  Bangla Grammar Checker
                 </p>
               </div>
             </a>

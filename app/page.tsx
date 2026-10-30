@@ -359,7 +359,7 @@ export default function ProofreaderPage() {
       <footer className="mt-auto border-t border-slate-200 bg-white py-4 px-6 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>
-            <strong>সংবাদ শুদ্ধি</strong> — পেশাদার বাংলা সংবাদপত্র সম্পাদনা ও নিরীক্ষা ব্যবস্থা
+            <strong>সংবাদ শুদ্ধি (SongbadSudhhi)</strong> — বাংলা ব্যাকরণ ও বানান নিরীক্ষা ব্যবস্থা (Bangla Grammar Checker)
           </span>
           <span className="text-[11px] text-slate-400">
             বাংলা একাডেমি প্রমিত বানানরীতি ও শীর্ষ জাতীয় দৈনিকসমূহের প্রেস স্ট্যান্ডার্ড অনুযায়ী নির্মিত
