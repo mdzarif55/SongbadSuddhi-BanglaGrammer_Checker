@@ -81,6 +81,10 @@ describe('Bengali Dictionary Engine & Rule Checks', () => {
 
     const bEntry = bengaliDictionary.lookupMisspelling('ব্যকরণ');
     expect(bEntry?.correct).toBe('ব্যাকরণ');
+
+    const bereEntry = bengaliDictionary.lookupMisspelling('বেরে');
+    expect(bereEntry).not.toBeNull();
+    expect(bereEntry?.correct).toBe('বেড়ে');
   });
 
   it('detects double plural redundancy rules', () => {
