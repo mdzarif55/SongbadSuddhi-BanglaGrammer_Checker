@@ -1,6 +1,6 @@
 /**
  * Official Google Gemini SDK Service for Bengali Newsroom Proofreader
- * Uses @google/genai with strict JSON validation and graceful dictionary fallback.
+ * Uses @google/genai with strict JSON validation, multi-model fallback, and graceful dictionary fallback.
  */
 
 import { GoogleGenAI } from '@google/genai';
@@ -24,15 +24,22 @@ import {
 } from '@/types/proofreading';
 import { normalizeBengali, normalizeTypography } from '../dictionary/normalize';
 
-const apiKey = process.env.GEMINI_API_KEY || '';
-const configuredModel = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
-
-// Lazily initialize client
-function getGenAIClient(): GoogleGenAI | null {
+// Dynamically retrieve configured client
+function getGenAIClient(): { client: GoogleGenAI | null; modelsToTry: string[] } {
+  const apiKey = (process.env.GEMINI_API_KEY || '').trim();
   if (!apiKey || apiKey === 'your_gemini_api_key_here') {
-    return null;
+    return { client: null, modelsToTry: [] };
   }
-  return new GoogleGenAI({ apiKey });
+
+  const primaryModel = (process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite').trim();
+  // Robust fallback sequence in case of model retirement or temporary 503 high-demand spike
+  const fallbackModels = ['gemini-3.5-flash-lite', 'gemini-3.5-flash', 'gemini-3.8-flash'];
+  const modelsToTry = [
+    primaryModel,
+    ...fallbackModels.filter((m) => m !== primaryModel),
+  ];
+
+  return { client: new GoogleGenAI({ apiKey }), modelsToTry };
 }
 
 /**
@@ -66,7 +73,7 @@ export async function analyzeArticleWithGemini(params: {
   modelName: string;
 }> {
   const { title, content, category = 'national', style = 'bangla_academy' } = params;
-  const client = getGenAIClient();
+  const { client, modelsToTry } = getGenAIClient();
   const normalizedContent = normalizeBengali(content);
 
   // Compute text statistics
@@ -81,82 +88,84 @@ export async function analyzeArticleWithGemini(params: {
   let summaryBengali = '';
   const editorialWarnings: string[] = [];
   let isAiActive = false;
+  let successfulModel = '';
 
   // 1. First run deterministic dictionary and rule checks
   const dictIssues = bengaliDictionary.scanTextForDictionaryIssues(normalizedContent, style);
   const ruleIssues = bengaliDictionary.scanTextForRuleIssues(normalizedContent);
 
-  if (client) {
-    try {
-      const systemPrompt = buildEditorialSystemPrompt(style, category);
-      const userPrompt = buildProofreadUserPrompt(title, normalizedContent);
+  if (client && modelsToTry.length > 0) {
+    const systemPrompt = buildEditorialSystemPrompt(style, category);
+    const userPrompt = buildProofreadUserPrompt(title, normalizedContent);
 
-      const response = await client.models.generateContent({
-        model: configuredModel,
-        contents: [
-          {
-            role: 'user',
-            parts: [{ text: userPrompt }],
+    // Try models in fallback order
+    for (const modelCandidate of modelsToTry) {
+      try {
+        const response = await client.models.generateContent({
+          model: modelCandidate,
+          contents: [
+            {
+              role: 'user',
+              parts: [{ text: userPrompt }],
+            },
+          ],
+          config: {
+            systemInstruction: systemPrompt,
+            responseMimeType: 'application/json',
+            temperature: 0.1,
           },
-        ],
-        config: {
-          systemInstruction: systemPrompt,
-          responseMimeType: 'application/json',
-          temperature: 0.1,
-        },
-      });
+        });
 
-      const responseText = response.text || '';
-      const parsedJson = JSON.parse(cleanJsonOutput(responseText));
-      const validated = AiAnalysisResponseSchema.parse(parsedJson);
+        const responseText = response.text || '';
+        const parsedJson = JSON.parse(cleanJsonOutput(responseText));
+        const validated = AiAnalysisResponseSchema.parse(parsedJson);
 
-      // Verify and align offsets on the server
-      const alignedAiIssues = verifyAndAlignAiIssues(normalizedContent, validated.issues);
+        // Verify and align offsets on the server
+        const alignedAiIssues = verifyAndAlignAiIssues(normalizedContent, validated.issues);
 
-      // Merge AI issues with dictionary issues, avoiding duplicates
-      const existingOffsets = new Set<string>();
-      for (const issue of alignedAiIssues) {
-        if (issue.startOffset !== null) {
-          existingOffsets.add(`${issue.startOffset}-${issue.endOffset}`);
+        // Merge AI issues with dictionary issues, avoiding duplicates
+        const existingOffsets = new Set<string>();
+        for (const issue of alignedAiIssues) {
+          if (issue.startOffset !== null) {
+            existingOffsets.add(`${issue.startOffset}-${issue.endOffset}`);
+          }
+          issues.push(issue);
         }
-        issues.push(issue);
-      }
 
-      // Add dictionary/rule issues if not already covered
-      for (const dIssue of [...dictIssues, ...ruleIssues]) {
-        const key = `${dIssue.startOffset}-${dIssue.endOffset}`;
-        if (!existingOffsets.has(key)) {
-          issues.push(dIssue);
-          existingOffsets.add(key);
+        // Add dictionary/rule issues if not already covered
+        for (const dIssue of [...dictIssues, ...ruleIssues]) {
+          const key = `${dIssue.startOffset}-${dIssue.endOffset}`;
+          if (!existingOffsets.has(key)) {
+            issues.push(dIssue);
+            existingOffsets.add(key);
+          }
         }
+
+        summaryBengali =
+          validated.summaryBengali ||
+          'সংবাদের প্রুফরিডিং ও বিশ্লেষণ সম্পন্ন হয়েছে। চিহ্নিত বিষয়সমূহ পর্যালোচনা করুন।';
+
+        if (validated.editorialWarnings) {
+          editorialWarnings.push(...validated.editorialWarnings);
+        }
+
+        isAiActive = true;
+        successfulModel = modelCandidate;
+        break; // Successfully completed!
+      } catch (err: any) {
+        console.warn(`Attempt with ${modelCandidate} failed:`, err?.message || err);
+        // Continue to next model in sequence
       }
-
-      summaryBengali =
-        validated.summaryBengali ||
-        'সংবাদের প্রুফরিডিং ও বিশ্লেষণ সম্পন্ন হয়েছে। চিহ্নিত বিষয়সমূহ পর্যালোচনা করুন।';
-
-      if (validated.editorialWarnings) {
-        editorialWarnings.push(...validated.editorialWarnings);
-      }
-
-      isAiActive = true;
-    } catch (error) {
-      console.error('Gemini API call failed, falling back to dictionary & rules:', error);
-      // Fallback to dictionary + rules
-      issues = [...dictIssues, ...ruleIssues];
-      summaryBengali =
-        'কৃত্রিম বুদ্ধিমত্তা (AI) সংযোগ সাময়িকভাবে অপ্রাপ্য থাকায় বাংলা একাডেমি অভিধান ও প্রমিত সংবাদ ব্যাকরণ নিয়মের ভিত্তিতে বিশ্লেষণ সম্পন্ন হয়েছে।';
-      editorialWarnings.push(
-        'Gemini API সংযোগ সক্রিয় নয় বা কোটা অতিক্রান্ত হয়েছে। শুধুমাত্র অভিধান ও স্থানীয় সম্পাদকীয় নিয়ম প্রযোজ্য হয়েছে।'
-      );
     }
-  } else {
-    // No API Key configured - use local dictionary & rules gracefully
+  }
+
+  // If AI was not active (either no client or all model attempts failed)
+  if (!isAiActive) {
     issues = [...dictIssues, ...ruleIssues];
     summaryBengali =
-      'বাংলা একাডেমি প্রমিত অভিধান ও সম্পাদকীয় নিয়মাবলি দ্বারা লেখাটি পরীক্ষা করা হয়েছে। পূর্ণাঙ্গ এআই বিশ্লেষণের জন্য GEMINI_API_KEY সেট করুন।';
+      'বাংলা একাডেমি প্রমিত অভিধান ও সম্পাদকীয় নিয়মাবলি দ্বারা লেখাটি পরীক্ষা করা হয়েছে।';
     editorialWarnings.push(
-      'সার্ভারে GEMINI_API_KEY কনফিগার করা নেই। অভিধান ও ব্যাকরণগত নিয়মের সাহায্যে প্রাথমিক ফলাফল প্রদর্শিত হচ্ছে।'
+      'Gemini API সংযোগ সাময়িকভাবে অপ্রাপ্য থাকায় অভিধান ও ব্যাকরণগত নিয়মের সাহায্যে ফলাফল প্রদর্শিত হচ্ছে।'
     );
   }
 
@@ -214,7 +223,7 @@ export async function analyzeArticleWithGemini(params: {
     issues,
     summary,
     aiUsed: isAiActive,
-    modelName: isAiActive ? configuredModel : 'Local Dictionary Engine',
+    modelName: isAiActive ? successfulModel : 'Local Dictionary Engine',
   };
 }
 
@@ -237,48 +246,50 @@ export async function correctArticleWithGemini(params: {
     preserveQuotes = true,
   } = params;
 
-  const client = getGenAIClient();
+  const { client, modelsToTry } = getGenAIClient();
   const normalizedContent = normalizeBengali(content);
 
-  if (client) {
-    try {
-      const systemPrompt = buildEditorialSystemPrompt(style, category);
-      const userPrompt = buildCorrectionUserPrompt(title, normalizedContent, preserveQuotes);
+  if (client && modelsToTry.length > 0) {
+    const systemPrompt = buildEditorialSystemPrompt(style, category);
+    const userPrompt = buildCorrectionUserPrompt(title, normalizedContent, preserveQuotes);
 
-      const response = await client.models.generateContent({
-        model: configuredModel,
-        contents: [
-          {
-            role: 'user',
-            parts: [{ text: userPrompt }],
+    for (const modelCandidate of modelsToTry) {
+      try {
+        const response = await client.models.generateContent({
+          model: modelCandidate,
+          contents: [
+            {
+              role: 'user',
+              parts: [{ text: userPrompt }],
+            },
+          ],
+          config: {
+            systemInstruction: systemPrompt,
+            responseMimeType: 'application/json',
+            temperature: 0.1,
           },
-        ],
-        config: {
-          systemInstruction: systemPrompt,
-          responseMimeType: 'application/json',
-          temperature: 0.1,
-        },
-      });
+        });
 
-      const parsed = JSON.parse(cleanJsonOutput(response.text || ''));
-      const validated = AiCorrectResponseSchema.parse(parsed);
+        const parsed = JSON.parse(cleanJsonOutput(response.text || ''));
+        const validated = AiCorrectResponseSchema.parse(parsed);
 
-      return {
-        success: true,
-        originalArticle: normalizedContent,
-        correctedArticle: normalizeBengali(validated.correctedArticle),
-        correctedTitle: validated.correctedTitle
-          ? normalizeBengali(validated.correctedTitle)
-          : title,
-        changesApplied: 1,
-        editorialWarnings: validated.editorialWarnings || [],
-        summaryBengali:
-          validated.changesSummary ||
-          'সংবাদের নাম, পরিসংখ্যান ও উদ্ধৃতি অক্ষুণ্ণ রেখে প্রমিত বাংলা সংবাদরীতি অনুযায়ী সম্পূর্ণ লেখা সংশোধন করা হয়েছে।',
-        processingTimeMs: Date.now() - startTime,
-      };
-    } catch (error) {
-      console.error('Gemini full correction failed, falling back to local normalizer:', error);
+        return {
+          success: true,
+          originalArticle: normalizedContent,
+          correctedArticle: normalizeBengali(validated.correctedArticle),
+          correctedTitle: validated.correctedTitle
+            ? normalizeBengali(validated.correctedTitle)
+            : title,
+          changesApplied: 1,
+          editorialWarnings: validated.editorialWarnings || [],
+          summaryBengali:
+            validated.changesSummary ||
+            'সংবাদের নাম, পরিসংখ্যান ও উদ্ধৃতি অক্ষুণ্ণ রেখে প্রমিত বাংলা সংবাদরীতি অনুযায়ী সম্পূর্ণ লেখা সংশোধন করা হয়েছে।',
+          processingTimeMs: Date.now() - startTime,
+        };
+      } catch (err: any) {
+        console.warn(`Correction attempt with ${modelCandidate} failed:`, err?.message || err);
+      }
     }
   }
 

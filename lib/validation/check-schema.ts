@@ -73,3 +73,4 @@ export const AiCorrectResponseSchema = z.object({
   changesSummary: z.string().default(''),
   editorialWarnings: z.array(z.string()).default([]),
 });
+

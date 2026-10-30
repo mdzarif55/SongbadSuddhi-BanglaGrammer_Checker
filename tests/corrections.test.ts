@@ -168,3 +168,4 @@ describe('Safe Text Replacement Engine', () => {
     expect(hasAdded).toBe(true);
   });
 });
+

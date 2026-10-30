@@ -79,3 +79,4 @@ export function sanitizeUntrustedArticleInput(input: string): string {
     .replace(/\[SYSTEM_INSTRUCTION\]/gi, '')
     .replace(/```(?:json|markdown)?\s*\{\s*"rules":/gi, '');
 }
+
