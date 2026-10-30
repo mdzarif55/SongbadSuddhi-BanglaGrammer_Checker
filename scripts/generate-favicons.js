@@ -85,16 +85,10 @@ function buildIco(images) {
 async function main() {
   const rootDir = path.resolve(__dirname, '..');
   const appDir = path.join(rootDir, 'app');
-  const publicDir = path.join(rootDir, 'public');
 
-  if (!fs.existsSync(publicDir)) {
-    fs.mkdirSync(publicDir, { recursive: true });
-  }
-
-  // 1. Write app/icon.svg and public/icon.svg
+  // 1. Write app/icon.svg (Next.js App Router convention)
   fs.writeFileSync(path.join(appDir, 'icon.svg'), svgIcon.trim());
-  fs.writeFileSync(path.join(publicDir, 'icon.svg'), svgIcon.trim());
-  console.log('✓ Saved icon.svg');
+  console.log('✓ Saved app/icon.svg');
 
   // 2. Generate PNG buffers at sizes 16, 32, 48
   const sizes = [16, 32, 48];
@@ -108,23 +102,22 @@ async function main() {
     images.push({ width: size, height: size, buffer });
   }
 
-  // Also create apple-touch-icon (180x180) and 192x192, 512x512
+  // Also create apple-icon.png (Next.js App Router convention)
   const appleIcon = await sharp(Buffer.from(svgIcon))
     .resize(180, 180)
     .png()
     .toBuffer();
   fs.writeFileSync(path.join(appDir, 'apple-icon.png'), appleIcon);
-  fs.writeFileSync(path.join(publicDir, 'apple-touch-icon.png'), appleIcon);
-  console.log('✓ Saved apple-touch-icon.png');
+  console.log('✓ Saved app/apple-icon.png');
 
-  // 3. Assemble proper multi-size ICO file
+  // 3. Assemble proper multi-size ICO file for app/favicon.ico
   const icoBuffer = buildIco(images);
   fs.writeFileSync(path.join(appDir, 'favicon.ico'), icoBuffer);
-  fs.writeFileSync(path.join(publicDir, 'favicon.ico'), icoBuffer);
-  console.log(`✓ Saved valid favicon.ico (${icoBuffer.length} bytes with sizes: ${sizes.join(', ')})`);
+  console.log(`✓ Saved valid app/favicon.ico (${icoBuffer.length} bytes with sizes: ${sizes.join(', ')})`);
 }
 
 main().catch(err => {
   console.error(err);
   process.exit(1);
 });
+
