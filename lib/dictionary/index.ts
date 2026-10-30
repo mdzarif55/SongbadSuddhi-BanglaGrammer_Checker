@@ -9,6 +9,16 @@ import { normalizeBengali, tokenizeBengaliWords } from './normalize';
 import { findSuggestions } from './suggestions';
 import { Issue, EditorialStyle } from '@/types/proofreading';
 
+const BENGALI_INFLECTIONAL_SUFFIXES = [
+  'গুলোকে', 'গুলোতে', 'গুলোর', 'গুলোয়',
+  'দেরকে', 'দিগকে', 'খানিতে', 'খানির',
+  'গুলো', 'গুলি', 'খানা', 'খানি',
+  'ভাবে', 'মুখী', 'শীল', 'হীন', 'যুক্ত',
+  'টিতে', 'টিকে', 'টির',
+  'টাতে', 'টাকে', 'টার',
+  'দের', 'টি', 'টা', 'কে', 'রে', 'তে', 'য়ে', 'র', 'ের', 'ে', 'য়'
+];
+
 export interface MisspellingEntry {
   wrong: string;
   correct: string;
@@ -96,8 +106,27 @@ class BengaliDictionaryEngine implements BengaliDictionaryInterface {
     return this.protectedEntitiesSet.has(norm);
   }
 
+  public isValidBengaliWord(word: string): boolean {
+    const norm = normalizeBengali(word.trim());
+    if (!norm) return true;
+    if (this.lookupWord(norm)) return true;
+    if (norm.length <= 1) return true; // Single letter or punctuation
+    if (/^[০-৯0-9]+$/.test(norm)) return true; // Numerals
+
+    // Suffix stripping check
+    for (const suffix of BENGALI_INFLECTIONAL_SUFFIXES) {
+      if (norm.length > suffix.length + 1 && norm.endsWith(suffix)) {
+        const stem = norm.slice(0, -suffix.length);
+        if (this.lookupWord(stem)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   /**
-   * Scans text for known misspellings directly from the lexicon
+   * Scans text for known misspellings and unknown near-miss words directly from the lexicon
    */
   public scanTextForDictionaryIssues(content: string, _style: EditorialStyle = 'bangla_academy'): Issue[] {
     if (!content) return [];
@@ -107,6 +136,7 @@ class BengaliDictionaryEngine implements BengaliDictionaryInterface {
     let counter = 0;
 
     for (const token of tokens) {
+      // 1. Direct match with curated editorial misspellings
       const match = this.lookupMisspelling(token.word);
       if (match) {
         issues.push({
@@ -123,6 +153,28 @@ class BengaliDictionaryEngine implements BengaliDictionaryInterface {
           source: 'dictionary',
           ruleId: `lexicon-${token.word}`,
         });
+        continue;
+      }
+
+      // 2. Near-miss spelling check against 436k vocabulary
+      if (!this.isValidBengaliWord(token.word)) {
+        const suggestions = this.getSuggestions(token.word, 3);
+        if (suggestions.length > 0) {
+          issues.push({
+            id: `dict-near-${Date.now()}-${++counter}`,
+            originalText: token.word,
+            suggestedReplacement: suggestions[0],
+            category: 'spelling',
+            explanation: `শব্দটি প্রমিত বাংলা অভিধানে নেই। সম্ভাব্য শুদ্ধ রূপ: ${suggestions.join(', ')}`,
+            severity: 'medium',
+            confidence: 0.92,
+            startOffset: token.start,
+            endOffset: token.end,
+            requiresHumanReview: false,
+            source: 'dictionary',
+            ruleId: `spell-suggest-${token.word}`,
+          });
+        }
       }
     }
 

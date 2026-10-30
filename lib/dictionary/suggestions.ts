@@ -28,7 +28,31 @@ const PHONETIC_GROUPS: Record<string, string> = {
   'ঁ': 'M',
   'জ': 'J',
   'য': 'J',
+  'ট': 'T',
+  'ঠ': 'T',
 };
+
+// Cached vocabulary length index for fast candidate filtering
+let cachedVocabulary: string[] | null = null;
+let vocabularyByLength: Map<number, string[]> = new Map();
+
+function getVocabularyByLength(vocabulary: string[]): Map<number, string[]> {
+  if (cachedVocabulary === vocabulary && vocabularyByLength.size > 0) {
+    return vocabularyByLength;
+  }
+  vocabularyByLength = new Map();
+  for (const word of vocabulary) {
+    const len = word.length;
+    let list = vocabularyByLength.get(len);
+    if (!list) {
+      list = [];
+      vocabularyByLength.set(len, list);
+    }
+    list.push(word);
+  }
+  cachedVocabulary = vocabulary;
+  return vocabularyByLength;
+}
 
 /**
  * Encodes a Bengali word into a rough phonetic skeleton
@@ -76,7 +100,7 @@ export function levenshteinDistance(a: string, b: string): number {
 
 /**
  * Find candidate suggestions from a target vocabulary list based on
- * edit distance and phonetic skeleton matching.
+ * fast length-indexed candidate pooling, edit distance, and phonetic skeleton matching.
  */
 export function findSuggestions(
   word: string,
@@ -84,29 +108,48 @@ export function findSuggestions(
   maxResults = 4,
   maxDistance = 2
 ): string[] {
-  const normalizedTarget = normalizeBengali(word);
+  const normalizedTarget = normalizeBengali(word.trim());
+  if (!normalizedTarget) return [];
   const targetKey = bengaliPhoneticKey(normalizedTarget);
+  const targetLength = normalizedTarget.length;
 
+  const lenIndex = getVocabularyByLength(vocabulary);
   const scored: { word: string; distance: number; phoneticBonus: boolean }[] = [];
 
-  for (const candidate of vocabulary) {
-    const candidateNorm = normalizeBengali(candidate);
-    if (candidateNorm === normalizedTarget) continue;
+  // Only examine words within length difference of [-maxDistance..+maxDistance]
+  const minLen = Math.max(1, targetLength - maxDistance);
+  const maxLen = targetLength + maxDistance;
 
-    // Fast prune: if length difference exceeds max threshold, skip expensive DP computation
-    if (Math.abs(candidateNorm.length - normalizedTarget.length) > maxDistance + 1) {
-      continue;
-    }
+  for (let len = minLen; len <= maxLen; len++) {
+    const candidates = lenIndex.get(len);
+    if (!candidates) continue;
 
-    const dist = levenshteinDistance(normalizedTarget, candidateNorm);
-    const candidateKey = bengaliPhoneticKey(candidateNorm);
-    const phoneticBonus = targetKey === candidateKey;
+    for (let i = 0; i < candidates.length; i++) {
+      const candidateNorm = candidates[i];
+      if (candidateNorm === normalizedTarget) continue;
 
-    // Allow slightly higher distance if phonetically identical
-    const threshold = phoneticBonus ? maxDistance + 1 : maxDistance;
+      // Fast prefix/character check to avoid running full DP on unrelated words
+      const targetFirstPhonetic = targetKey[0];
+      const candFirstPhonetic = PHONETIC_GROUPS[candidateNorm[0]] || candidateNorm[0];
+      const firstMatches = candidateNorm[0] === normalizedTarget[0] || candFirstPhonetic === targetFirstPhonetic;
+      const secondMatches = candidateNorm[1] === normalizedTarget[1];
 
-    if (dist <= threshold) {
-      scored.push({ word: candidateNorm, distance: dist, phoneticBonus });
+      if (!firstMatches && !secondMatches && candidateNorm.length > 2) {
+        continue;
+      }
+
+      const dist = levenshteinDistance(normalizedTarget, candidateNorm);
+      const candidateKey = bengaliPhoneticKey(candidateNorm);
+      const phoneticBonus = targetKey === candidateKey;
+
+      const threshold = phoneticBonus ? maxDistance + 1 : maxDistance;
+
+      if (dist <= threshold) {
+        scored.push({ word: candidateNorm, distance: dist, phoneticBonus });
+        if (dist === 1 && phoneticBonus && scored.length >= maxResults * 2) {
+          break;
+        }
+      }
     }
   }
 
@@ -118,6 +161,6 @@ export function findSuggestions(
     return a.distance - b.distance;
   });
 
-  return scored.slice(0, maxResults).map((item) => item.word);
+  return Array.from(new Set(scored.map((item) => item.word))).slice(0, maxResults);
 }
 

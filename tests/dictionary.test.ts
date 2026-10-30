@@ -85,6 +85,33 @@ describe('Bengali Dictionary Engine & Rule Checks', () => {
     const bereEntry = bengaliDictionary.lookupMisspelling('বেরে');
     expect(bereEntry).not.toBeNull();
     expect(bereEntry?.correct).toBe('বেড়ে');
+
+    const kEntry = bengaliDictionary.lookupMisspelling('কারন');
+    expect(kEntry?.correct).toBe('কারণ');
+
+    const aEntry = bengaliDictionary.lookupMisspelling('আক্রমন');
+    expect(aEntry?.correct).toBe('আক্রমণ');
+
+    const stEntry = bengaliDictionary.lookupMisspelling('ষ্টেশন');
+    expect(stEntry?.correct).toBe('স্টেশন');
+
+    const onusthanEntry = bengaliDictionary.lookupMisspelling('অনুষ্টান');
+    expect(onusthanEntry?.correct).toBe('অনুষ্ঠান');
+  });
+
+  it('scans text and detects near-miss spelling errors with suggested replacements', () => {
+    const text = 'আজকে স্কুলের পরিক্ষা ও সাংস্কৃতিক অনুষ্টান অনুষ্ঠিত হচ্ছে।';
+    const issues = bengaliDictionary.scanTextForDictionaryIssues(text);
+    
+    // 'পরিক্ষা' should be flagged with 'পরীক্ষা'
+    const porikkhaIssue = issues.find((i) => i.originalText === 'পরিক্ষা');
+    expect(porikkhaIssue).toBeDefined();
+    expect(porikkhaIssue?.suggestedReplacement).toBe('পরীক্ষা');
+
+    // 'অনুষ্টান' should be flagged with 'অনুষ্ঠান'
+    const onusthanIssue = issues.find((i) => i.originalText === 'অনুষ্টান');
+    expect(onusthanIssue).toBeDefined();
+    expect(onusthanIssue?.suggestedReplacement).toBe('অনুষ্ঠান');
   });
 
   it('detects double plural redundancy rules', () => {
