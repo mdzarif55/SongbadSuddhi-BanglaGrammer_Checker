@@ -40,3 +40,23 @@ body {
   background-color: #ccfbf1;
   color: #0f766e;
 }
+
+/* Error blimp animation */
+@keyframes blimpAnimation {
+  0%, 100% {
+    transform: scale(1);
+    background-color: #ffe4e6;
+    box-shadow: 0 0 0 2px #f43f5e;
+  }
+  50% {
+    transform: scale(1.06);
+    background-color: #fecdd3;
+    box-shadow: 0 0 12px 3px rgba(244, 63, 94, 0.45);
+  }
+}
+
+.animate-blimp {
+  animation: blimpAnimation 1.2s ease-in-out infinite;
+}
+
+

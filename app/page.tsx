@@ -39,6 +39,7 @@ export default function ProofreaderPage() {
   >({});
   const [summary, setSummary] = useState<SummaryType | null>(null);
   const [activeFilter, setActiveFilter] = useState<IssueCategory | 'all'>('all');
+  const [activeIssueId, setActiveIssueId] = useState<string | null>(null);
 
   // UI state
   const [isLoading, setIsLoading] = useState(false);
@@ -82,6 +83,7 @@ export default function ProofreaderPage() {
         initialStatuses[issue.id] = 'pending';
       });
       setIssueStatuses(initialStatuses);
+      setActiveIssueId(data.issues[0]?.id || null);
 
       setOriginalSnapshot(content);
       setWorkingText(content);
@@ -143,10 +145,14 @@ export default function ProofreaderPage() {
     );
 
     const replacementResult = applySafeReplacements(originalSnapshot, acceptedIssues);
+    // Directly update left side editor text and working snapshot
+    setContent(replacementResult.updatedText);
     setWorkingText(replacementResult.updatedText);
 
     // Recompute offsets for the remaining pending issues
-    const remainingPending = issues.filter((i) => updatedStatuses[i.id] === 'pending');
+    const remainingPending = issues.filter(
+      (i) => i.id !== issue.id && (updatedStatuses[i.id] || 'pending') === 'pending'
+    );
     const alignedRemaining = recomputeRemainingOffsets(
       replacementResult.updatedText,
       remainingPending
@@ -159,6 +165,13 @@ export default function ProofreaderPage() {
         return found ? found : i;
       })
     );
+
+    // Focus next pending issue if available
+    if (remainingPending.length > 0) {
+      setActiveIssueId(remainingPending[0].id);
+    } else {
+      setActiveIssueId(null);
+    }
   };
 
   // 4. Reject Individual Issue
@@ -174,7 +187,9 @@ export default function ProofreaderPage() {
     // Re-apply remaining accepted issues
     const acceptedIssues = issues.filter((i) => updatedStatuses[i.id] === 'accepted');
     const replacementResult = applySafeReplacements(originalSnapshot, acceptedIssues);
+    setContent(replacementResult.updatedText);
     setWorkingText(replacementResult.updatedText);
+    setActiveIssueId(issue.id);
   };
 
   // 6. Accept All Pending Issues
@@ -192,8 +207,10 @@ export default function ProofreaderPage() {
     });
 
     const replacementResult = applySafeReplacements(originalSnapshot, toApply);
+    setContent(replacementResult.updatedText);
     setWorkingText(replacementResult.updatedText);
     setIssueStatuses(updatedStatuses);
+    setActiveIssueId(null);
     setActiveTab('comparison');
   };
 
@@ -208,16 +225,19 @@ export default function ProofreaderPage() {
       });
       return next;
     });
+    setActiveIssueId(null);
   };
 
   // 8. Reset All Changes
   const handleResetAll = () => {
+    setContent(originalSnapshot);
     setWorkingText(originalSnapshot);
     const resetStatuses: Record<string, 'pending' | 'accepted' | 'rejected'> = {};
     issues.forEach((issue) => {
       resetStatuses[issue.id] = 'pending';
     });
     setIssueStatuses(resetStatuses);
+    setActiveIssueId(issues[0]?.id || null);
   };
 
   // 9. Clear Everything
@@ -271,6 +291,11 @@ export default function ProofreaderPage() {
               isCorrecting={isCorrecting}
               error={error}
               onRetry={handleCheckArticle}
+              issues={issues}
+              issueStatuses={issueStatuses}
+              activeIssueId={activeIssueId}
+              onSelectIssue={(id) => setActiveIssueId(id)}
+              onAcceptIssue={handleAcceptIssue}
             />
           </div>
 
@@ -316,6 +341,8 @@ export default function ProofreaderPage() {
                 issues={issues}
                 issueStatuses={issueStatuses}
                 activeFilter={activeFilter}
+                selectedIssueId={activeIssueId}
+                onSelectIssue={(issue) => setActiveIssueId(issue.id)}
                 onAcceptIssue={handleAcceptIssue}
                 onRejectIssue={handleRejectIssue}
                 onUndoIssue={handleUndoIssue}

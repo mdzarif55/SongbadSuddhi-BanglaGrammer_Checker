@@ -15,6 +15,8 @@ interface IssuePanelProps {
   issues: Issue[];
   issueStatuses: Record<string, 'pending' | 'accepted' | 'rejected'>;
   activeFilter: IssueCategory | 'all';
+  selectedIssueId?: string | null;
+  onSelectIssue?: (issue: Issue) => void;
   onAcceptIssue: (issue: Issue) => void;
   onRejectIssue: (issue: Issue) => void;
   onUndoIssue: (issue: Issue) => void;
@@ -27,6 +29,8 @@ export const IssuePanel: React.FC<IssuePanelProps> = ({
   issues,
   issueStatuses,
   activeFilter,
+  selectedIssueId,
+  onSelectIssue,
   onAcceptIssue,
   onRejectIssue,
   onUndoIssue,
@@ -128,6 +132,8 @@ export const IssuePanel: React.FC<IssuePanelProps> = ({
               key={issue.id}
               issue={issue}
               status={issueStatuses[issue.id] || 'pending'}
+              isSelected={selectedIssueId === issue.id}
+              onSelect={onSelectIssue}
               onAccept={onAcceptIssue}
               onReject={onRejectIssue}
               onUndo={onUndoIssue}
@@ -138,3 +144,4 @@ export const IssuePanel: React.FC<IssuePanelProps> = ({
     </div>
   );
 };
+

@@ -15,6 +15,8 @@ import { Issue, IssueCategory, IssueSeverity } from '@/types/proofreading';
 interface IssueCardProps {
   issue: Issue;
   status: 'pending' | 'accepted' | 'rejected';
+  isSelected?: boolean;
+  onSelect?: (issue: Issue) => void;
   onAccept: (issue: Issue) => void;
   onReject: (issue: Issue) => void;
   onUndo: (issue: Issue) => void;
@@ -23,6 +25,8 @@ interface IssueCardProps {
 export const IssueCard: React.FC<IssueCardProps> = ({
   issue,
   status,
+  isSelected,
+  onSelect,
   onAccept,
   onReject,
   onUndo,
@@ -60,12 +64,16 @@ export const IssueCard: React.FC<IssueCardProps> = ({
 
   return (
     <div
-      className={`p-4 rounded-xl border transition-all duration-150 ${
-        status === 'accepted'
+      id={`issue-card-${issue.id}`}
+      onClick={() => onSelect?.(issue)}
+      className={`p-4 rounded-xl border transition-all duration-200 cursor-pointer ${
+        isSelected
+          ? 'bg-rose-50/50 border-rose-400 ring-2 ring-rose-400/40 shadow-md scale-[1.01]'
+          : status === 'accepted'
           ? 'bg-emerald-50/40 border-emerald-300 opacity-80'
           : status === 'rejected'
           ? 'bg-slate-50 border-slate-200 opacity-60'
-          : 'bg-white border-slate-200 hover:border-slate-300 shadow-sm'
+          : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-sm'
       }`}
     >
       {/* Header: Badges & Severity */}
@@ -119,9 +127,20 @@ export const IssueCard: React.FC<IssueCardProps> = ({
         {issue.suggestedReplacement ? (
           <>
             <ArrowRight className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-            <span className="text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded font-bold border border-emerald-300">
-              {issue.suggestedReplacement}
-            </span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onAccept(issue);
+              }}
+              className="group inline-flex items-center gap-1.5 text-emerald-800 bg-emerald-50 hover:bg-emerald-600 hover:text-white px-2.5 py-1 rounded-md font-bold border border-emerald-300 hover:border-emerald-600 transition-all cursor-pointer shadow-xs active:scale-95"
+              title="ক্লিক করুন: বামপাশের মূল লেখায় এই সঠিক রূপটি সরাসরি বসে যাবে"
+            >
+              <span>{issue.suggestedReplacement}</span>
+              <span className="text-[10px] opacity-75 font-normal group-hover:text-emerald-100">
+                (প্রয়োগ করুন ↵)
+              </span>
+            </button>
           </>
         ) : (
           <span className="text-xs text-slate-400 italic">(বর্জনের প্রস্তাব)</span>
@@ -193,3 +212,4 @@ export const IssueCard: React.FC<IssueCardProps> = ({
     </div>
   );
 };
+
