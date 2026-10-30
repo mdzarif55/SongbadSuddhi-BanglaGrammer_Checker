@@ -10,13 +10,19 @@ import { findSuggestions } from './suggestions';
 import { Issue, EditorialStyle } from '@/types/proofreading';
 
 const BENGALI_INFLECTIONAL_SUFFIXES = [
-  'গুলোকে', 'গুলোতে', 'গুলোর', 'গুলোয়',
-  'দেরকে', 'দিগকে', 'খানিতে', 'খানির',
+  // Multi-character / layered suffixes
+  'গুলোতে', 'গুলোকে', 'গুলোর', 'গুলোয়', 'গুলির', 'গুলিতে', 'গুলিকে',
+  'খানিতে', 'খানির', 'খানাকে', 'খানার',
+  'দেরকে', 'দিগকে', 'সমূহকে', 'সমূহের',
+  'ভাবে', 'মুখী', 'মুখীন', 'শীল', 'শীলতা', 'হীন', 'যুক্ত', 'মূলক', 'ভিত্তিক',
+  'তা', 'ত্ব', 'সমূহ', 'গণ', 'বর্গ', 'মণ্ডল',
   'গুলো', 'গুলি', 'খানা', 'খানি',
-  'ভাবে', 'মুখী', 'শীল', 'হীন', 'যুক্ত',
   'টিতে', 'টিকে', 'টির',
   'টাতে', 'টাকে', 'টার',
-  'দের', 'টি', 'টা', 'কে', 'রে', 'তে', 'য়ে', 'র', 'ের', 'ে', 'য়'
+  'দের', 'রা',
+  'টি', 'টা',
+  'কে', 'রে', 'তে', 'য়ে', 'র', 'ের', 'ে', 'য়',
+  'ই', 'ও'
 ];
 
 export interface MisspellingEntry {
@@ -64,7 +70,10 @@ class BengaliDictionaryEngine implements BengaliDictionaryInterface {
 
   constructor() {
     this.metadata = dictionaryData.metadata;
-    this.standardWordSet = new Set(dictionaryData.standardWords);
+    this.standardWordSet = new Set();
+    for (const word of dictionaryData.standardWords) {
+      this.standardWordSet.add(normalizeBengali(word));
+    }
 
     this.misspellingMap = new Map();
     for (const item of dictionaryData.misspellings) {
@@ -83,8 +92,8 @@ class BengaliDictionaryEngine implements BengaliDictionaryInterface {
 
     this.editorialRules = dictionaryData.editorialRules as EditorialRuleEntry[];
 
-    // Re-use array reference for memory efficiency
-    this.allVocabularyList = dictionaryData.standardWords;
+    // Canonical normalized vocabulary list
+    this.allVocabularyList = Array.from(this.standardWordSet);
   }
 
   public lookupWord(word: string): boolean {
@@ -106,19 +115,21 @@ class BengaliDictionaryEngine implements BengaliDictionaryInterface {
     return this.protectedEntitiesSet.has(norm);
   }
 
-  public isValidBengaliWord(word: string): boolean {
+  public isValidBengaliWord(word: string, depth = 0): boolean {
     const norm = normalizeBengali(word.trim());
     if (!norm) return true;
     if (this.lookupWord(norm)) return true;
     if (norm.length <= 1) return true; // Single letter or punctuation
     if (/^[০-৯0-9]+$/.test(norm)) return true; // Numerals
 
-    // Suffix stripping check
-    for (const suffix of BENGALI_INFLECTIONAL_SUFFIXES) {
-      if (norm.length > suffix.length + 1 && norm.endsWith(suffix)) {
-        const stem = norm.slice(0, -suffix.length);
-        if (this.lookupWord(stem)) {
-          return true;
+    // Suffix stripping check (up to 2 levels of layered suffixes)
+    if (depth < 2) {
+      for (const suffix of BENGALI_INFLECTIONAL_SUFFIXES) {
+        if (norm.length > suffix.length + 1 && norm.endsWith(suffix)) {
+          const stem = norm.slice(0, -suffix.length);
+          if (this.isValidBengaliWord(stem, depth + 1)) {
+            return true;
+          }
         }
       }
     }

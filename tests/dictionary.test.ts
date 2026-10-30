@@ -114,6 +114,32 @@ describe('Bengali Dictionary Engine & Rule Checks', () => {
     expect(onusthanIssue?.suggestedReplacement).toBe('অনুষ্ঠান');
   });
 
+  it('correctly recognizes valid standard words with য়, ড়, ঢ় and suffixes without false positives', () => {
+    const validWords = [
+      'প্রয়োজনীয়',
+      'প্রয়োজনীয়তা',
+      'প্রয়োজনীয়ভাবে',
+      'হয়েছে',
+      'সময়',
+      'বিষয়',
+      'বাড়ি',
+      'গাড়ি',
+      'দৃঢ়',
+      'দায়িত্ব',
+      'নিয়মিত',
+      'উন্নয়ন',
+    ];
+
+    for (const w of validWords) {
+      expect(bengaliDictionary.isValidBengaliWord(w)).toBe(true);
+    }
+
+    // A completely correct sentence must produce zero dictionary issues
+    const cleanSentence = 'দেশের উন্নয়নের স্বার্থে এ বিষয়ে প্রয়োজনীয় পদক্ষেপ গ্রহণ করা হয়েছে।';
+    const cleanIssues = bengaliDictionary.scanTextForDictionaryIssues(cleanSentence);
+    expect(cleanIssues.length).toBe(0);
+  });
+
   it('detects double plural redundancy rules', () => {
     const sample = 'সব কর্মকর্তারা বৈঠকে উপস্থিত ছিলেন।';
     const issues = bengaliDictionary.scanTextForRuleIssues(sample);
