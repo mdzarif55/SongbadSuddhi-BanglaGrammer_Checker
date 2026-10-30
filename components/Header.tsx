@@ -8,7 +8,6 @@ import {
 } from 'lucide-react';
 import { EditorialStyle } from '@/types/proofreading';
 import { DictionaryInfoModal } from './DictionaryInfoModal';
-import Link from 'next/link';
 
 interface HeaderProps {
   editorialStyle: EditorialStyle;
@@ -29,24 +28,32 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Brand Logo & Name */}
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center text-emerald-400 shadow-md border border-slate-700">
+            <a
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.href = '/';
+              }}
+              className="flex items-center space-x-3 group cursor-pointer"
+              title="নতুন করে শুরু করতে পেজ রিফ্রেশ করুন"
+            >
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center text-emerald-400 shadow-md border border-slate-700 group-hover:scale-105 transition-transform">
                 <Newspaper className="w-5 h-5" />
               </div>
               <div>
-                <Link href="/"><div className="flex items-center gap-2">
-                  <h1 className="text-xl font-bold tracking-tight text-slate-900">
+                <div className="flex items-center gap-2">
+                  <h1 className="text-xl font-bold tracking-tight text-slate-900 group-hover:text-teal-700 transition-colors">
                     সংবাদ শুদ্ধি
                   </h1>
                   <span className="hidden sm:inline-block px-2 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-800 rounded-full border border-emerald-200">
                     নিউজরুম সংস্করণ
                   </span>
-                </div></Link>
+                </div>
                 <p className="text-[11px] font-medium text-slate-500 tracking-wide">
                   Bangla Newsroom Proofreader
                 </p>
               </div>
-            </div>
+            </a>
 
             {/* Middle / Right Controls */}
             <div className="flex items-center space-x-2 sm:space-x-3">
